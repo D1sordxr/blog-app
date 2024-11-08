@@ -1,5 +1,15 @@
 env: "local"
-storage_path: "./storage/storage.db"
+
+storage:
+    host: "localhost"
+    port: 5432
+    database: "BlogApp"
+    user: "postgres"
+    password: "1234"
+    migration: true
+    logging: true
+    max_idle_connection: 100
+
 http_server:
   address: "localhost"
-  port: "9000"
+  port: "8888"

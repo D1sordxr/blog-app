@@ -1,23 +1,40 @@
 package postgres
 
 import (
-	"database/sql"
+	"fmt"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-type Storage struct {
-	DB       *sql.DB
-	DBConfig StorageConfig `yaml:"db_config" env-required:"true"`
+type DBConfig struct {
+	Host              string `yaml:"host"`
+	Port              int    `yaml:"port"`
+	Database          string `yaml:"database"`
+	User              string `yaml:"user"`
+	Password          string `yaml:"password"`
+	Migration         bool   `yaml:"migration"`
+	Logging           bool   `yaml:"logging"`
+	MaxIdleConnection int    `yaml:"max_idle_connection"`
 }
 
-type StorageConfig struct {
-	DBHost     string `yaml:"db_host" env-default:"localhost"`
-	DBUser     string `yaml:"db_user" env-default:"postgres"`
-	DBPassword string `yaml:"db_password" env-required:"true"`
-	DBName     string `yaml:"db_name" env-default:"postgres"`
-	DBPort     string `yaml:"db_port" env-default:"5432"`
-	DBSSLMode  string `yaml:"db_sslmode" env-default:"disabled"`
+func (conf *DBConfig) ConnectionString() string { // DSN
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d",
+		conf.Host, conf.User, conf.Password, conf.Database, conf.Port,
+	)
 }
 
-func Connect() {
-	// TODO: postgres connection
+func BuildConnection(config *DBConfig) (*gorm.DB, error) {
+	gormConfig := gorm.Config{}
+
+	db, err := gorm.Open(postgres.Open(config.ConnectionString()), &gormConfig)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load database: %v", err.Error())
+	}
+
+	if config.Migration {
+		migrate(db)
+	}
+
+	return db, nil
 }

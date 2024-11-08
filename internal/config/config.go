@@ -1,27 +1,30 @@
 package config
 
 import (
+	db "BlogWebApp/internal/storage/postgres"
 	"flag"
 	"github.com/ilyakaznacheev/cleanenv"
 	"os"
 )
 
 type Config struct {
-	Env         string           `yaml:"env" env-default:"local"`
-	StoragePath string           `yaml:"storage_path" env-required:"true"`
-	HTTPServer  HTTPServerConfig `yaml:"http_server"`
+	Env              string `yaml:"env" env-default:"local"`
+	db.DBConfig      `yaml:"storage" env-required:"true"`
+	HTTPServerConfig `yaml:"http_server"`
 }
 
 type HTTPServerConfig struct {
-	Address string `yaml:"address"`
-	Port    string `yaml:"port"`
+	Address string `yaml:"address" env-required:"true"`
+	Port    string `yaml:"port" env-required:"true"`
 }
+
+const BasicConfigPath = "./config/local.yaml"
 
 func MustLoad() *Config {
 	path := fetchConfigPath()
 
 	if path == "" {
-		panic("config path is empty")
+		path = BasicConfigPath
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {

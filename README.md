@@ -1,1 +1,1 @@
-simple app template
+### just a chaotic app

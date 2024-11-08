@@ -2,9 +2,10 @@ package main
 
 import (
 	"BlogWebApp/internal/config"
-	"BlogWebApp/internal/lib/logger/sl"
-	"BlogWebApp/internal/storage/sqlite"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"log/slog"
+	"net/http"
 	"os"
 )
 
@@ -15,22 +16,29 @@ const (
 )
 
 func main() {
+
 	cfg := config.MustLoad()
 
 	log := setupLogger(cfg.Env)
-
 	log.Info("starting blog app", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
-	storage, err := sqlite.New(cfg.StoragePath)
-	if err != nil {
-		log.Error("failed to init storage", sl.Err(err))
+	//storage, err := postgres.BuildConnection(cfg)
+	//if err != nil {
+	//	log.Error("Failed to connect database:", err)
+	//}
+	//_ = storage
+
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
+	if err := r.Run(); err != nil {
+		fmt.Printf("%v", err)
 		os.Exit(1)
 	}
-
-	_ = storage
-
-	// TODO: init router: gin
 
 }
 
