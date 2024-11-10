@@ -1,11 +1,10 @@
 package main
 
 import (
+	"BlogWebApp/internal/api"
 	"BlogWebApp/internal/config"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log/slog"
-	"net/http"
 	"os"
 )
 
@@ -29,17 +28,9 @@ func main() {
 	//}
 	//_ = storage
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	if err := r.Run(); err != nil {
-		fmt.Printf("%v", err)
-		os.Exit(1)
-	}
-
+	router := gin.Default()
+	api.Setup(router)
+	_ = router.Run(":" + cfg.HTTPServerConfig.Port)
 }
 
 func setupLogger(env string) *slog.Logger {

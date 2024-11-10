@@ -1,6 +1,7 @@
 package config
 
 import (
+	"BlogWebApp/internal/api"
 	db "BlogWebApp/internal/storage/postgres"
 	"flag"
 	"github.com/ilyakaznacheev/cleanenv"
@@ -8,14 +9,9 @@ import (
 )
 
 type Config struct {
-	Env              string `yaml:"env" env-default:"local"`
-	db.DBConfig      `yaml:"storage" env-required:"true"`
-	HTTPServerConfig `yaml:"http_server"`
-}
-
-type HTTPServerConfig struct {
-	Address string `yaml:"address" env-required:"true"`
-	Port    string `yaml:"port" env-required:"true"`
+	Env                  string `yaml:"env" env-default:"local"`
+	db.DBConfig          `yaml:"storage" env-required:"true"`
+	api.HTTPServerConfig `yaml:"http_server"`
 }
 
 const BasicConfigPath = "./config/local.yaml"
