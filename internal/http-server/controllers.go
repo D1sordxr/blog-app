@@ -55,6 +55,37 @@ func AddPost(c *gin.Context) {
 }
 
 func UpdatePost(c *gin.Context) {
+	var post models.Post
+
+	id := c.Param("id")
+	var json map[string]string
+	if err := c.BindJSON(&json); err != nil {
+		log.Printf("Error parsing json")
+	}
+
+	if err := db.DB.First(&post, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	if title, ok := json["title"]; ok {
+		post.Title = title
+	}
+	if content, ok := json["content"]; ok {
+		post.Content = content
+	}
+
+	if err := db.DB.Save(&post).Error; err != nil {
+		log.Printf("Error updating post: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update post"})
+		return
+	}
+
+	c.JSON(http.StatusOK, post)
 
 }
 
@@ -72,5 +103,5 @@ func DeletePost(c *gin.Context) { // TODO: remake delete method
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"post": post})
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully deleted!"})
 }
