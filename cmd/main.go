@@ -1,9 +1,8 @@
 package main
 
 import (
-	"BlogWebApp/internal/api"
 	"BlogWebApp/internal/config"
-	"github.com/gin-gonic/gin"
+	"BlogWebApp/internal/storage/postgres"
 	"log/slog"
 	"os"
 )
@@ -22,15 +21,15 @@ func main() {
 	log.Info("starting blog app", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
-	//storage, err := postgres.BuildConnection(cfg)
-	//if err != nil {
-	//	log.Error("Failed to connect database:", err)
-	//}
-	//_ = storage
+	storage, err := postgres.BuildConnection(&cfg.DBConfig)
+	if err != nil {
+		log.Error("Failed to connect database:", err)
+	}
+	_ = storage
 
-	router := gin.Default()
-	api.Setup(router)
-	_ = router.Run(":" + cfg.HTTPServerConfig.Port)
+	//router := gin.Default()
+	//api.Setup(router)
+	//_ = router.Run(":" + cfg.HTTPServerConfig.Port)
 }
 
 func setupLogger(env string) *slog.Logger {

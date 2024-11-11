@@ -2,10 +2,10 @@ env: "local"
 
 storage:
     host: "localhost"
-    port: 5432
+    port: 5433
     database: "BlogApp"
     user: "postgres"
-    password: "1234"
+    password: "rootroot"
     migration: true
     logging: true
     max_idle_connection: 100

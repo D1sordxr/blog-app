@@ -24,15 +24,15 @@ func (conf *DBConfig) ConnectionString() string { // DSN
 	)
 }
 
-func BuildConnection(config *DBConfig) (*gorm.DB, error) {
+func BuildConnection(c *DBConfig) (*gorm.DB, error) {
 	gormConfig := gorm.Config{}
 
-	db, err := gorm.Open(postgres.Open(config.ConnectionString()), &gormConfig)
+	db, err := gorm.Open(postgres.Open(c.ConnectionString()), &gormConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load database: %v", err.Error())
 	}
 
-	if config.Migration {
+	if c.Migration {
 		migrate(db)
 	}
 

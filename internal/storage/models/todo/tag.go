@@ -1,4 +1,4 @@
-package models
+package todo
 
 type Tag struct {
 	Base
