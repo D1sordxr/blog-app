@@ -1,7 +1,7 @@
 package config
 
 import (
-	"BlogWebApp/internal/api"
+	api "BlogWebApp/internal/http-server"
 	db "BlogWebApp/internal/storage/postgres"
 	"flag"
 	"github.com/ilyakaznacheev/cleanenv"

@@ -1,4 +1,4 @@
-package api
+package http_server
 
 import "github.com/gin-gonic/gin"
 
@@ -7,6 +7,7 @@ func Setup(r *gin.Engine) {
 	{
 		api.GET("/posts", GetPosts)
 		api.POST("/posts", AddPost)
+		api.GET("/posts/:id", GetPostByID)
 		api.PATCH("/posts/:id", UpdatePost)
 		api.DELETE("/posts/:id", DeletePost)
 	}
