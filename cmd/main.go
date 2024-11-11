@@ -24,7 +24,8 @@ func main() {
 
 	router := gin.Default()
 	api.Setup(router) // http://localhost:8888/api/v1/posts
-	// TODO: auth middleware
+
+	// TODO: log middleware
 
 	port := cfg.HTTPServerConfig.Port
 	if err = router.Run(":" + port); err != nil {
