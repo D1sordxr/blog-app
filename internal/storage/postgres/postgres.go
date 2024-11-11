@@ -17,6 +17,8 @@ type DBConfig struct {
 	MaxIdleConnection int    `yaml:"max_idle_connection"`
 }
 
+var DB *gorm.DB
+
 func (conf *DBConfig) ConnectionString() string { // DSN
 	return fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d",
@@ -24,17 +26,19 @@ func (conf *DBConfig) ConnectionString() string { // DSN
 	)
 }
 
-func BuildConnection(c *DBConfig) (*gorm.DB, error) {
+func BuildConnection(c *DBConfig) error {
 	gormConfig := gorm.Config{}
 
-	db, err := gorm.Open(postgres.Open(c.ConnectionString()), &gormConfig)
+	connection, err := gorm.Open(postgres.Open(c.ConnectionString()), &gormConfig)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load database: %v", err.Error())
+		return fmt.Errorf("failed to load database: %v", err.Error())
 	}
+
+	DB = connection
 
 	if c.Migration {
-		migrate(db)
+		migrate(DB)
 	}
 
-	return db, nil
+	return nil
 }

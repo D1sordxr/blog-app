@@ -1,1 +1,1 @@
-### just a chaotic app
+## Simple blog app

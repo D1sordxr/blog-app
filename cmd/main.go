@@ -17,14 +17,13 @@ func main() {
 	log.Info("starting blog app", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
-	storage, err := db.BuildConnection(&cfg.DBConfig)
+	err := db.BuildConnection(&cfg.DBConfig)
 	if err != nil {
 		log.Error("Failed to connect database:", err)
 	}
-	_ = storage
 
 	router := gin.Default()
-	api.Setup(router)
+	api.Setup(router) // http://localhost:8888/api/v1/posts
 	// TODO: middleware
 
 	port := cfg.HTTPServerConfig.Port
